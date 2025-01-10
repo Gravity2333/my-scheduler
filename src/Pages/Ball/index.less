@@ -1,0 +1,29 @@
+.container {
+    position: relative;
+    width: 100%;  /* 容器宽度为视口宽度 */
+    height: 100px; /* 容器高度为视口高度 */
+    overflow: hidden; /* 防止小球溢出容器 */
+    background-color: lightblue;
+    border: 1px solid red;
+  }
+  
+  .ball {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #ff5722;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out; /* 平滑过渡效果 */
+    animation: bounce 1.5s infinite alternate; /* 弹跳动画 */
+  }
+  
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
+  

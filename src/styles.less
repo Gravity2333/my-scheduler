@@ -1,0 +1,55 @@
+@secondary-color: #50e3c2; /* 薄荷绿色 */
+@background-color: #f5f7fa; /* 浅灰白 */
+@text-color: rgb(128, 128, 128, 0.01); /* 深灰色 */
+@highlight-color: #4a90e2; /* 珊瑚红 */
+
+:root {
+  --main-color: #4a90e2;
+  --header-color: #f5f7fa;
+  --header-font-color: rgb(128, 128, 128, 0.01);
+  --content-bg-color: white;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  color: #333;
+  color: @text-color;
+  font-family: "Arial", sans-serif;
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f4;
+  background-color: @background-color;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+/* a 标签基本样式 */
+a {
+  position: relative; /* 使得伪元素可以定位 */
+  color: var(--main-color);
+  text-decoration: none;
+}
+
+/* 悬浮时的横线效果 */
+a::after {
+  position: absolute;
+  bottom: -2px; /* 横线位置，距离文本底部2px */
+  left: 0;
+  width: 0;
+  height: 2px; /* 横线的高度 */
+  background-color: @highlight-color; /* 横线的颜色 */
+  transition: width 0.3s ease; /* 动画效果：横线的宽度 */
+  content: "";
+}
+
+/* 悬浮时，横线宽度变化 */
+a:hover::after {
+  width: 100%; /* 横线的宽度变为100% */
+}
