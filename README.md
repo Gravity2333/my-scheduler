@@ -1,8 +1,8 @@
-# my-scheduler 说明文档
+# my-sample-scheduler 说明文档
 
 ## 概述
 
-`my-scheduler` 是一个 JavaScript 调度器，旨在优化任务执行的顺序和优先级。通过模拟浏览器的任务调度系统，`my-scheduler` 允许开发者按照优先级调度任务，并管理定时任务的执行。它支持多种任务优先级，并根据不同任务的优先级和时间延迟来控制任务的调度。
+`my-sample-scheduler` 是一个 JavaScript 调度器，旨在优化任务执行的顺序和优先级。通过模拟浏览器的任务调度系统，`my-scheduler` 允许开发者按照优先级调度任务，并管理定时任务的执行。它支持多种任务优先级，并根据不同任务的优先级和时间延迟来控制任务的调度。
 
 该调度器支持：
 
@@ -22,13 +22,13 @@
 ## 安装
 
 ```bash
-npm install my-scheduler
+npm install my-sample-scheduler
 ```
 
 ## 使用
-
+my-sample-scheduler 使用单例模式，请直接导入scheduler调度器
 ```javascript
-import scheduler from "my-scheduler";
+import scheduler from "my-sample-scheduler";
 
 // 简单的任务调度
 scheduler.scheduleCallback(
@@ -54,8 +54,8 @@ scheduler.scheduleCallback(
 ### 任务优先级
 调度器支持以下几种任务优先级，您可以根据任务的紧急程度选择合适的优先级：
 
-IMMEDIATE_PRIORITY：立即执行的任务，具有最高优先级。适用于需要立即执行的任务。
-USER_BLOCKING_PRIORITY：用户阻塞任务，适用于需要交互的任务。
-NORMAL_PRIORITY：普通任务，默认优先级。
-LOW_PRIORITY：低优先级任务，适用于不急需执行的任务。
-IDLE_PRIORITY：空闲任务，只有在没有其他任务时才会执行。# my-scheduler
+- **IMMEDIATE_PRIORITY**：立即执行的任务，具有最高优先级。适用于需要立即执行的任务。
+- **USER_BLOCKING_PRIORITY**：用户阻塞任务，适用于需要交互的任务。
+- **NORMAL_PRIORITY**：普通任务，默认优先级。
+- **LOW_PRIORITY**：低优先级任务，适用于不急需执行的任务。
+- **IDLE_PRIORITY**：空闲任务，只有在没有其他任务时才会执行。
