@@ -1,19 +1,29 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: process.env.NODE_ENV,
   context: path.resolve(__dirname, "./"),
-  entry: "./src/index.tsx",
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "js/bundle.js",
-    chunkFilename: "js/[name]-[chunkhash:8].js",
-    clean: true,
-    // 增加 publicPath 把 src="/js/bundle.js" 使用绝对路径
-    publicPath: "/",
-  },
+  entry:
+    process.env.NODE_ENV === "development"
+      ? "./src/index.tsx"
+      : "./src/libs/scheduler.ts",
+  output:
+    process.env.NODE_ENV === "development"
+      ? {
+          path: path.resolve(__dirname, "dist"),
+          filename: "js/bundle.js",
+          chunkFilename: "js/[name]-[chunkhash:8].js",
+          clean: true,
+          publicPath: "/",
+        }
+      : {
+          path: path.resolve(__dirname, "dist"),
+          filename: "bundle.js",
+          clean: true,
+        },
   resolveLoader: {
     extensions: [".tsx", ".js", ".ts", ".jsx", ".jsx", ".less"],
     modules: ["./src/loaders", "node_modules"],
@@ -34,7 +44,8 @@ module.exports = {
     rules: [
       {
         test: /\.(t|j)sx?$/,
-        use: "babel-loader",
+        use:
+          process.env.NODE_ENV === "development" ? "babel-loader" : "ts-loader",
       },
       {
         test: /\.less$/,
@@ -64,34 +75,35 @@ module.exports = {
           },
         ],
       },
-      // 解析图片
-      {
-        test: /\.(png|jpe?g|gif|svg|webp)$/i,
-        type: "asset/resource", // 使用 Webpack 5 的内置类型
-        generator: {
-          filename: "images/[name].[hash:8][ext]",
-        },
-      },
-      // 解析md
-      {
-        test: /\.md$/,
-        use: [
-          "raw-loader", // 使 .md 文件内容以字符串的形式加载
-        ],
-      },
     ],
   },
 
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./template.html",
-      inject: "body",
-    }),
-    new MiniCssExtractPlugin({
-      filename: "css/[name].[contenthash].css", // 提取的 CSS 文件名
-      chunkFilename: "css/[id].css",
-    }),
-  ],
+  plugins:
+    process.env.NODE_ENV === "development"
+      ? [
+          new HtmlWebpackPlugin({
+            template: "./template.html",
+            inject: "body",
+          }),
+          new MiniCssExtractPlugin({
+            filename: "css/[name].[contenthash].css", // 提取的 CSS 文件名
+            chunkFilename: "css/[id].css",
+          }),
+        ]
+      : [
+          new CopyPlugin({
+            patterns: [
+              {
+                from: path.resolve(__dirname, "./package.prod.json"),
+                to: "./package.json",
+              },
+              {
+                from: path.resolve(__dirname, "./README.md"),
+                to: "",
+              },
+            ],
+          }),
+        ],
   devServer: {
     port: 3110,
     host: "127.0.0.1",

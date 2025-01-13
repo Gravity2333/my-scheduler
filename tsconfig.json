@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist", // 指定声明文件输出目录
+    "outDir": "./dist", // 指定输出目录
     "jsx": "react-jsx",
     "strict": true, // 启用严格模式
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "esnext",
     "module": "esnext",
+    "noUnusedLocals": false,   // 禁用未使用变量的检查
+    "noUnusedParameters": false,// 禁用未使用参数的检查
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "importHelpers": true,
@@ -19,30 +24,9 @@
     "allowSyntheticDefaultImports": true,
     "pretty": true,
     "noEmitOnError": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false
   },
-  "include": [
-    "mock/**/*",
-    "src/**/*",
-    "config/**/*",
-    ".umirc.ts",
-    ".eslintrc.js",
-    ".stylelintrc.js",
-    ".prettierrc.js",
-    "typings.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "es",
-    "dist",
-    "typings",
-    "**/__test__",
-    "test",
-    "docs",
-    "tests"
-  ]
+  "include": ["src/libs/*"],     // 确保包含正确的源文件
+  "exclude": ["node_modules"]  // 排除 node_modules
 }

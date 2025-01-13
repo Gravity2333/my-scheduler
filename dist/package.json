@@ -1,0 +1,13 @@
+{
+  "name": "my-sample-scheduler",
+  "version": "1.0.0",
+  "description": "a sample scheduler",
+  "main": "bundle.js",
+  "keywords": [],
+  "author": "liuze0304",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gravity2333/my-scheduler"
+  }
+}
