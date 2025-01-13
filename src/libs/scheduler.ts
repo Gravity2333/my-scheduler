@@ -178,6 +178,13 @@ class Scheduler implements SchedulerInterface {
         this.requestHostCallback();
       }
     }
+
+    return userCallbackTask;
+  }
+
+  /** 取消任务 */
+  public cancelCallback(task: UserCallbackTask) {
+    task.callback = null;
   }
 
   /** 开启任务循环 */
@@ -284,7 +291,7 @@ class Scheduler implements SchedulerInterface {
   private schedulePerformWorkUntilDeadline() {
     if (typeof MessageChannel === "function") {
       const messageChannel = new MessageChannel();
-      messageChannel.port2.onmessage =  this.performWorkUntilDeadline.bind(this);
+      messageChannel.port2.onmessage = this.performWorkUntilDeadline.bind(this);
       /** 发送消息 */
       messageChannel.port1.postMessage(null);
     } else {
@@ -422,6 +429,5 @@ class Scheduler implements SchedulerInterface {
   }
 }
 
-const scheduler = new Scheduler()
-export default scheduler
-
+const scheduler = new Scheduler();
+export default scheduler;

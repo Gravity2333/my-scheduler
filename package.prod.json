@@ -1,6 +1,6 @@
 {
   "name": "my-sample-scheduler",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a sample scheduler",
   "main": "bundle.js",
   "keywords": [],

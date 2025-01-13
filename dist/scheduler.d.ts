@@ -23,6 +23,22 @@ interface SchedulerInterface {
      */
     scheduleCallback: (priorityLevel: PriorityLevel, callback: UserCallback, delay?: number) => void;
 }
+/** 用户任务
+ *  Callback 会被封装成Task
+ */
+type UserCallbackTask = {
+    /** id由taskCounter维护 确定任务的先后顺序，当sortIndex相同时，根据先后顺序比较 */
+    id: number;
+    priorityLevel: PriorityLevel;
+    callback: UserCallback | null;
+    startTime: number;
+    expirationTime: number;
+    /** 优先级队列根据这个sortIndex维护顺序
+     * 在非延迟的情况下 sortIndex就是过期时间
+     * 在延迟的情况下 sortIndex为startTime 即延迟结束advanced到taskQueue到时间
+     */
+    sortIndex: number;
+};
 /** 导出一个Scheduler 调度器 */
 declare class Scheduler implements SchedulerInterface {
     /** 声明任务队列 */
@@ -67,7 +83,9 @@ declare class Scheduler implements SchedulerInterface {
     /** 计时器id 用来清理定时器 */
     private timerId;
     /** 注册回调任务 */
-    scheduleCallback(priorityLevel?: PriorityLevel, callback?: UserCallback, delay?: number): void;
+    scheduleCallback(priorityLevel?: PriorityLevel, callback?: UserCallback, delay?: number): UserCallbackTask;
+    /** 取消任务 */
+    cancelCallback(task: UserCallbackTask): void;
     /** 开启任务循环 */
     private requestHostCallback;
     private advacneTimers;
