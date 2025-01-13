@@ -23,7 +23,17 @@ module.exports = {
           path: path.resolve(__dirname, "dist"),
           filename: "bundle.js",
           clean: true,
+          library: {
+            type: "module", // 指定导出类型为 ES Module
+          },
+          module: true, // 启用 ES Module 规范
+          environment: {
+            module: true, // 告诉 Webpack 不要转译 import/export
+          },
         },
+  experiments: {
+    outputModule: true, // 启用 ES Module 输出支持
+  },
   resolveLoader: {
     extensions: [".tsx", ".js", ".ts", ".jsx", ".jsx", ".less"],
     modules: ["./src/loaders", "node_modules"],
