@@ -116,6 +116,9 @@ class Scheduler implements SchedulerInterface {
   /** 计时器id 用来清理定时器 */
   private timerId: any = void 0;
 
+  /** 全局任务开始时间 */
+  private startTime = -1;
+
   /** 注册回调任务 */
   public scheduleCallback(
     priorityLevel: PriorityLevel = PriorityLevel.NORMAL_PRIORITY,
@@ -256,7 +259,7 @@ class Scheduler implements SchedulerInterface {
     if (this.isMessageLoopRunning) {
       /** 获得每次循环的开始时间 */
       const workStartTime = performance.now();
-
+      this.startTime = workStartTime;
       /**
        * 解释一下，这里为什么用try..finally
        * try中调用flushWork 执行任务，每次执行任务时，会从taskQueue中peek一个任务运行
@@ -362,7 +365,7 @@ class Scheduler implements SchedulerInterface {
       // 更新判断是否超时
       isUserCallbackTimeout = currentTask.expirationTime < workCurrentTime;
 
-      if (!isUserCallbackTimeout && this.shouldYieldHost(workStartTime)) {
+      if (!isUserCallbackTimeout && this.shouldYieldToHost()) {
         // 让出主线程
         break;
       }
@@ -419,13 +422,15 @@ class Scheduler implements SchedulerInterface {
   }
 
   /** 是否应当让出主线程 */
-  private shouldYieldHost(taskStartTime: number) {
-    const currentTime = performance.now();
-    if (currentTime - taskStartTime > frameYieldMs) {
-      return true;
+  public shouldYieldToHost(): boolean {
+    const timeElapsed = performance.now() - this.startTime;
+    if (timeElapsed < frameYieldMs) {
+      // The main thread has only been blocked for a really short amount of time;
+      // smaller than a single frame. Don't yield yet.
+      return false;
     }
-
-    return false;
+    // Yield now.
+    return true;
   }
 }
 

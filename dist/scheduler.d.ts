@@ -82,6 +82,8 @@ declare class Scheduler implements SchedulerInterface {
     private isHostTimeoutScheduled;
     /** 计时器id 用来清理定时器 */
     private timerId;
+    /** 全局任务开始时间 */
+    private startTime;
     /** 注册回调任务 */
     scheduleCallback(priorityLevel?: PriorityLevel, callback?: UserCallback, delay?: number): UserCallbackTask;
     /** 取消任务 */
@@ -123,7 +125,7 @@ declare class Scheduler implements SchedulerInterface {
      */
     private workLoop;
     /** 是否应当让出主线程 */
-    private shouldYieldHost;
+    shouldYieldToHost(): boolean;
 }
 declare const scheduler: Scheduler;
 export default scheduler;
