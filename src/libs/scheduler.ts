@@ -119,6 +119,9 @@ class Scheduler implements SchedulerInterface {
   /** 全局任务开始时间 */
   private startTime = -1;
 
+  /** 当前执行的优先级 */
+  private currentPriorityLevel: PriorityLevel = PriorityLevel.NORMAL_PRIORITY;
+
   /** 注册回调任务 */
   public scheduleCallback(
     priorityLevel: PriorityLevel = PriorityLevel.NORMAL_PRIORITY,
@@ -325,11 +328,14 @@ class Scheduler implements SchedulerInterface {
 
     // 加锁
     this.isPerformingWork = true;
+    const previousPriorityLeve = this.currentPriorityLevel;
     try {
       return this.workLoop(workStartTime);
     } finally {
       /** 注意 这里finally一定会在最后执行 即便上面有return （return只是标记了返回点） */
       this.isPerformingWork = false;
+      /** 恢复优先级 */
+      this.currentPriorityLevel = previousPriorityLeve;
     }
   }
 
@@ -372,9 +378,12 @@ class Scheduler implements SchedulerInterface {
 
       /** 还有时间 执行callback */
       const callback = currentTask.callback;
-      currentTask.callback = null;
 
       if (typeof callback === "function") {
+        // callback置空
+        currentTask.callback = null;
+        // 更新优先级
+        this.currentPriorityLevel = currentTask.priorityLevel;
         // 保证callback可调用
         const continuationCallback = callback(isUserCallbackTimeout);
         if (typeof continuationCallback === "function") {
@@ -431,6 +440,11 @@ class Scheduler implements SchedulerInterface {
     }
     // Yield now.
     return true;
+  }
+
+  /** 获取当前的优先级 */
+  getCurrentPriorityLevel() {
+    return this.currentPriorityLevel;
   }
 }
 
