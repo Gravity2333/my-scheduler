@@ -125,7 +125,7 @@ class Scheduler implements SchedulerInterface {
   /** 注册回调任务 */
   public scheduleCallback(
     priorityLevel: PriorityLevel = PriorityLevel.NORMAL_PRIORITY,
-    callback: UserCallback = () => {},
+    callback: UserCallback = () => { },
     delay = 0
   ) {
     /** 获取当前高精度时间 */
@@ -202,7 +202,7 @@ class Scheduler implements SchedulerInterface {
     }
   }
 
-  private advacneTimers() {}
+  private advacneTimers() { }
 
   /** 处理完成延迟
    * 1. 解锁
@@ -445,6 +445,19 @@ class Scheduler implements SchedulerInterface {
   /** 获取当前的优先级 */
   getCurrentPriorityLevel() {
     return this.currentPriorityLevel;
+  }
+
+  /** 以某优先级同步运行 */
+  runWithPriority(priorityLevel: PriorityLevel, callback: any) {
+    const priviouseLevel = this.currentPriorityLevel
+    this.currentPriorityLevel = priorityLevel
+    try {
+      callback()
+    } catch (e) {
+      console.warn(e)
+    } finally {
+      this.currentPriorityLevel = priviouseLevel
+    }
   }
 }
 
