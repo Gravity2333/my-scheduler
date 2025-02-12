@@ -125,7 +125,7 @@ class Scheduler implements SchedulerInterface {
   /** 注册回调任务 */
   public scheduleCallback(
     priorityLevel: PriorityLevel = PriorityLevel.NORMAL_PRIORITY,
-    callback: UserCallback = () => { },
+    callback: UserCallback = () => {},
     delay = 0
   ) {
     /** 获取当前高精度时间 */
@@ -202,7 +202,33 @@ class Scheduler implements SchedulerInterface {
     }
   }
 
-  private advacneTimers() { }
+  /** 这个函数的作用是，检查延迟队列，如果有已经完成延迟的 则加入任务队列 */
+  private advanceTimers() {
+    let currentTimerTask = this.timerQueue.peek();
+    while (currentTimerTask) {
+      // 判断，任务的callback是否为函数 如果不是 无法执行 直接弹出
+      if (typeof currentTimerTask.callback !== "function") {
+        this.taskQueue.pop();
+      } else {
+        // 检查延迟是否结束 判断条件是 task.expireTime < currentTime
+        const currentTime = performance.now();
+        if (currentTimerTask.expirationTime < currentTime) {
+          // 弹出当前任务
+          this.timerQueue.pop();
+          // 设置sortIndex
+          currentTimerTask.sortIndex = currentTimerTask.expirationTime;
+          // 加入taskQueue
+          this.taskQueue.push(currentTimerTask);
+        } else {
+          // 如果没有超时 由于peek拿到的是最快过期的任务，所以后面的不用检查了 直接return
+          return;
+        }
+      }
+
+      // 处理下一个timerTask
+      currentTimerTask = this.timerQueue.peek();
+    }
+  }
 
   /** 处理完成延迟
    * 1. 解锁
@@ -211,7 +237,7 @@ class Scheduler implements SchedulerInterface {
   private handleTimeout() {
     // 解锁
     this.isHostTimeoutScheduled = false;
-    this.advacneTimers();
+    this.advanceTimers();
 
     // 检查taskQueue
     if (!this.isHostTimeoutScheduled) {
@@ -353,7 +379,7 @@ class Scheduler implements SchedulerInterface {
     // 当前时间
     let workCurrentTime = workStartTime;
     // 先检查一下有没有延迟任务需要加入到taskQueue
-    this.advacneTimers();
+    this.advanceTimers();
     // 取得优先级最高的任务
     let currentTask = this.taskQueue.peek();
 
@@ -390,7 +416,7 @@ class Scheduler implements SchedulerInterface {
           // 如果返回了剩余任务，表示当前执行的是大任务，重新给task的callback赋值，结束workloop
           currentTask.callback = continuationCallback;
           // 看一下是否有可以加入到taskQueue的延迟任务
-          this.advacneTimers();
+          this.advanceTimers();
           // 表示还有任务
           return true;
         } else {
@@ -399,7 +425,7 @@ class Scheduler implements SchedulerInterface {
             this.taskQueue.pop(); // 弹出当前执行完的任务
           }
           // 看一下是否有可以加入到taskQueue的延迟任务
-          this.advacneTimers();
+          this.advanceTimers();
         }
       } else {
         // 如果callback为空 或者不是函数，说明当前任务不可执行 也可能是当前任务已经报错了，直接弹出
@@ -449,14 +475,14 @@ class Scheduler implements SchedulerInterface {
 
   /** 以某优先级同步运行 */
   runWithPriority(priorityLevel: PriorityLevel, callback: any) {
-    const priviouseLevel = this.currentPriorityLevel
-    this.currentPriorityLevel = priorityLevel
+    const priviouseLevel = this.currentPriorityLevel;
+    this.currentPriorityLevel = priorityLevel;
     try {
-      callback()
+      callback();
     } catch (e) {
-      console.warn(e)
+      console.warn(e);
     } finally {
-      this.currentPriorityLevel = priviouseLevel
+      this.currentPriorityLevel = priviouseLevel;
     }
   }
 }

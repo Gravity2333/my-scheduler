@@ -84,13 +84,16 @@ declare class Scheduler implements SchedulerInterface {
     private timerId;
     /** 全局任务开始时间 */
     private startTime;
+    /** 当前执行的优先级 */
+    private currentPriorityLevel;
     /** 注册回调任务 */
     scheduleCallback(priorityLevel?: PriorityLevel, callback?: UserCallback, delay?: number): UserCallbackTask;
     /** 取消任务 */
     cancelCallback(task: UserCallbackTask): void;
     /** 开启任务循环 */
     private requestHostCallback;
-    private advacneTimers;
+    /** 这个函数的作用是，检查延迟队列，如果有已经完成延迟的 则加入任务队列 */
+    private advanceTimers;
     /** 处理完成延迟
      * 1. 解锁
      * 2. 查看messageloop是否在运行，如果没有运行则触发
@@ -126,6 +129,10 @@ declare class Scheduler implements SchedulerInterface {
     private workLoop;
     /** 是否应当让出主线程 */
     shouldYieldToHost(): boolean;
+    /** 获取当前的优先级 */
+    getCurrentPriorityLevel(): PriorityLevel;
+    /** 以某优先级同步运行 */
+    runWithPriority(priorityLevel: PriorityLevel, callback: any): void;
 }
 declare const scheduler: Scheduler;
 export default scheduler;
