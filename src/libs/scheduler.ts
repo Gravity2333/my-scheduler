@@ -47,7 +47,9 @@ interface SchedulerInterface {
   ) => void;
 }
 
-/** 每个任务的最长时间 默认5ms */
+/** 每个任务的最长时间 默认5ms
+ *  为什么不用 16.7ms? 因为还要考虑到渲染时间，把每个任务切小 减少阻塞
+ */
 const frameYieldMs = 5;
 
 /** 用户任务
@@ -76,15 +78,33 @@ class Scheduler implements SchedulerInterface {
   /** 任务计数器 */
   private userTaskCnt = 0;
   /** 锁属性 */
+  /**
+   * 说一下这三个锁
+   * isMessageLoopRunning 从开始调用requestHostCallback 开始，到所有PriorityQueue中的任务都之行结束 都会被这个变量锁上
+   * 目的就是，只要MessageLoop这个循环开始了，他就会自己处理优先级队列中的所有任务 在这个过程中 isMessageLoopRunning 限制只能开启一个循环！
+   * 
+   * isHostCallbackScheduled 是锁住调度流程的 我们知道调度的原理是放到MessageChannel中，并且在onMessage中开启任务执行，而onMessage是排在任务队列里的，我们没办法保证在调度
+   * 完成之前，有没有新的任务被插入 （scheduleCallback被执行）所以用这个变量来限制 调度过程只能有一次 
+   * 
+   * isPerformingWork 锁住执行流程，执行的过程中，可能递归的插入新的任务，此时就保证在执行的过程中，也无法开启新的调度流程！
+   * 
+   * 
+   */
   /** 时间轴
    *  messageLoop
-   * ｜______________________________MessageLoop__________________________________|
+   *      ｜______________________________MessageLoop__________________________________|
    *  hostCallbackScheduled
    * |____hostCa..duled__|
    *  performWork
    *                     |__performWork__|    |__performWork__|   |__performWork__|
    *
    *
+   */
+
+  /** 
+   * 调用顺序
+   * scheduleCallback => requestHostCallback => schedulePerformworkUntilDeadline => performWorkUntilDeadline 
+   * => flushWork => workLoop 
    */
 
   /**
