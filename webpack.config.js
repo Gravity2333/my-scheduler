@@ -9,8 +9,8 @@ function generateConfig(outputs) {
     context: path.resolve(__dirname, "./"),
     entry:
       process.env.NODE_ENV === "development"
-        ? "./src/index.tsx"
-        : "./src/libs/scheduler.ts",
+        ? "./demo/index.tsx"
+        : "./src/scheduler.ts",
     output: output,
     experiments: {
       outputModule: true, // 启用 ES Module 输出支持
@@ -27,7 +27,7 @@ function generateConfig(outputs) {
       extensions: [".tsx", ".js", ".ts", ".jsx", ".jsx", ".less"],
       mainFiles: ["index"],
       alias: {
-        "@": path.resolve(__dirname, "./src"),
+        "@demo": path.resolve(__dirname, "./demo"),
         "@config": path.resolve(__dirname, "./config"),
       },
     },

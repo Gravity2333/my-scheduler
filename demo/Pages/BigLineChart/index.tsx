@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import styles from "./index.less"; // 引入CSS Module样式
-import scheduler, { PriorityLevel, UserCallback } from "@/libs/scheduler";
+import scheduler, { PriorityLevel, UserCallback } from "../../../src/scheduler";
 
 // 生成随机的时间和数据
 const generateData = (startTime: number) => {

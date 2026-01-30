@@ -1,5 +1,5 @@
-import scheduler, { PriorityLevel } from "./libs/scheduler";
-import BigLineChart from "@/Pages/BigLineChart";
+import scheduler, { PriorityLevel } from "../src/scheduler";
+import BigLineChart from "./Pages/BigLineChart";
 import { Modal, useModal } from "./components/Modal";
 import Ball from "./Pages/Ball";
 

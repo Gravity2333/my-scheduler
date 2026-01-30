@@ -27,6 +27,6 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false
   },
-  "include": ["src/libs/*"],     // 确保包含正确的源文件
+  "include": ["src/*"],     // 确保包含正确的源文件
   "exclude": ["node_modules"]  // 排除 node_modules
 }
