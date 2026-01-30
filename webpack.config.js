@@ -116,13 +116,15 @@ function generateConfig(outputs) {
 
 module.exports = generateConfig(
   process.env.NODE_ENV === "development"
-    ? {
-        path: path.resolve(__dirname, "dist"),
-        filename: "js/bundle.js",
-        chunkFilename: "js/[name]-[chunkhash:8].js",
-        clean: true,
-        publicPath: "/",
-      }
+    ? [
+        {
+          path: path.resolve(__dirname, "dist"),
+          filename: "js/bundle.js",
+          chunkFilename: "js/[name]-[chunkhash:8].js",
+          clean: true,
+          publicPath: "/",
+        },
+      ]
     : [
         {
           path: path.resolve(__dirname, "dist"),
