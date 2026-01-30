@@ -2,7 +2,13 @@
   "name": "my-sample-scheduler",
   "version": "1.0.4",
   "description": "a sample scheduler",
-  "main": "bundle.js",
+  "main": "scheduler.cjs",
+  "exports": {
+    ".": {
+      "import": "./scheduler.mjs",
+      "require": "./scheduler.cjs"
+    }
+  },
   "keywords": [],
   "author": "liuze0304",
   "license": "ISC",
