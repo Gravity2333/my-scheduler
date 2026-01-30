@@ -1,6 +1,6 @@
 {
   "name": "my-sample-scheduler",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "a sample scheduler",
   "main": "scheduler.cjs",
   "exports": {
